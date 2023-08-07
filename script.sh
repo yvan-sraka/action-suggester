@@ -1,5 +1,7 @@
-#!/bin/sh
-set -e
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p nix
+
+set -euo pipefail
 
 if [ -n "${GITHUB_WORKSPACE}" ]; then
   cd "${GITHUB_WORKSPACE}" || exit
@@ -13,7 +15,7 @@ git diff >"${TMPFILE}"
 git stash -u
 
 # shellcheck disable=SC2086
-reviewdog \
+nix run "nixpkgs#reviewdog" -- \
   -name="${INPUT_TOOL_NAME:-reviewdog-suggester}" \
   -f=diff \
   -f.diff.strip=1 \
